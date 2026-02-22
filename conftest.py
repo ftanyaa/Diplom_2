@@ -1,7 +1,9 @@
 import pytest
 import random
+import requests
 from helpers.user_helper import UserHelper
 from data.payloads import VALID_USER
+from data.urls import BASE_URL
 
 
 def generate_unique_email():
@@ -12,8 +14,18 @@ def generate_unique_email():
 def create_new_user():
     payload = VALID_USER.copy()
     payload["email"] = generate_unique_email()
+
     response = UserHelper.create_user(payload)
-    return payload, response.json()
+    data = response.json()
+
+    yield payload, data
+
+    # Очистка пользователя после теста
+    if "accessToken" in data:
+        requests.delete(
+            f"{BASE_URL}/api/auth/user",
+            headers={"Authorization": data["accessToken"]}
+        )
 
 
 @pytest.fixture

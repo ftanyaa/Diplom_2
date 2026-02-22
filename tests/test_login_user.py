@@ -1,6 +1,6 @@
 import allure
 from helpers.user_helper import UserHelper
-from data.payloads import VALID_USER, LOGIN_VALID
+from data.payloads import VALID_USER
 from data.messages import LOGIN_ERROR
 
 
@@ -8,17 +8,13 @@ from data.messages import LOGIN_ERROR
 class TestLoginUser:
 
     @allure.title("Вход под существующим пользователем")
-    def test_login_existing_user(self):
-        import random
-        email = f"test_user_{random.randint(10000, 99999)}@mail.com"
-        password = VALID_USER["password"]
-        user_payload = VALID_USER.copy()
-        user_payload["email"] = email
-
-        with allure.step("Создание пользователя для логина"):
-            UserHelper.create_user(user_payload)
+    def test_login_existing_user(self, create_new_user):
+        payload, _ = create_new_user
+        email = payload["email"]
+        password = payload["password"]
 
         login_data = {"email": email, "password": password}
+
         with allure.step("Вход под существующим пользователем"):
             response = UserHelper.login_user(login_data)
 
@@ -35,4 +31,3 @@ class TestLoginUser:
 
         assert response.status_code == 401
         assert response.json()["message"] == LOGIN_ERROR
-
