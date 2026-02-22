@@ -1,0 +1,5 @@
+USER_EXISTS = "User already exists"
+REQUIRED_FIELDS_ERROR = "Email, password and name are required fields"
+LOGIN_ERROR = "email or password are incorrect"
+UNAUTHORIZED = "You should be authorised"
+INGREDIENT_ERROR = "Ingredient ids must be provided"
